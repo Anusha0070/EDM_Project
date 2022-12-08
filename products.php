@@ -50,9 +50,9 @@ session_start();
 				<form action="returns.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
 				</form>
-				<form action="orders.php" method="post">
+				<!-- <form action="orders.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Orders</button>
-				</form> 
+				</form>  -->
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
