@@ -4,38 +4,67 @@ session_start();
 
 require_once('connection.php');
 
+if(isset($_POST['delete_query'])){
+            
+    // query to delete the selected query
+    $delete_query_id = $_POST['deletequeryid'];
+    $query_delete_query = "DELETE FROM CUSTOMER_CARE WHERE custqueryid='$delete_query_id'";
+    
+    $stid_delete_query = oci_parse($conn, $query_delete_query);
+    $r_delete_address = oci_execute($stid_delete_query);
+
+}
+
     if(isset($_POST['submit_query'])){
         // print("The save_changes is set!!");
         // print_r($_POST);
+
+        
+    
+
+        if(isset($_POST['updated_query'])){
+            $cust_query_id = $_POST['custqueryid'];
+            $updated_query = $_POST['updated_query'];
+
+            // to update the query
+            $update_query = "UPDATE CUSTOMER_CARE
+            SET description = '$updated_query'
+            WHERE custqueryid = '$cust_query_id'";
+            $stid_update_query = oci_parse($conn, $update_query);
+            $r_update_query = oci_execute($stid_update_query);
+        }
         if(isset($_POST['customer_query'])){
             $customer_query   = $_POST['customer_query'];
+            $user_email = $_SESSION['user'];
+            $user_query = "SELECT custid from customers WHERE email='$user_email'";
+            $stid_user_query = oci_parse($conn, $user_query);
+            $r_user_query = oci_execute($stid_user_query);
+            $row_user_query = oci_fetch_array($stid_user_query, OCI_RETURN_NULLS+OCI_ASSOC);
+            $cust_id = $row_user_query['CUSTID'];
+
+            // query to insert into customer_care table
+            $query_customer_care = "INSERT into CUSTOMER_CARE(description, custid, querydate) VALUES('".$customer_query."','".$cust_id."', to_date(to_char(sysdate, 'YYYY-MM-DD hh24:mi'), 'YYYY-MM-DD hh24:mi'))";
+            $stid_query_customer_care = oci_parse($conn, $query_customer_care);
+            $r_query_customer_care = oci_execute($stid_query_customer_care);
+
+            // query to get the query ID
+            $que_id = "SELECT custqueryid from (
+                select custid, custqueryid , row_number() over(partition by custid order by querydate desc) as rn
+                from CUSTOMER_CARE
+                where custid='$cust_id' and status='Open' and agentID is null)
+                where rn=1";
+            $stid_que_id = oci_parse($conn, $que_id);
+            $r_que_id = oci_execute($stid_que_id);
+            $row_que_id = oci_fetch_array($stid_que_id, OCI_RETURN_NULLS+OCI_ASSOC);
+            $query_ID = $row_que_id['CUSTQUERYID'];
+            
+            // query to assign agent to a new query
+            $query_ID = intval($query_ID);
+            $que_procedure1 = "BEGIN update_AgentID('$query_ID'); END;";
+            $stid_procedure1 = oci_parse($conn, $que_procedure1);
+            $r_procedure1 = oci_execute($stid_procedure1);
         }
-        $user_email = $_SESSION['user'];
-		$user_query = "SELECT custid from customers WHERE email='$user_email'";
-		$stid_user_query = oci_parse($conn, $user_query);
-        $r_user_query = oci_execute($stid_user_query);
-		$row_user_query = oci_fetch_array($stid_user_query, OCI_RETURN_NULLS+OCI_ASSOC);
-        $cust_id = $row_user_query['CUSTID'];
-        $query_customer_care = "INSERT into CUSTOMER_CARE(description, custid, querydate) VALUES('".$customer_query."','".$cust_id."', to_date(to_char(sysdate, 'YYYY-MM-DD hh24:mi'), 'YYYY-MM-DD hh24:mi'))";
-        $stid_query_customer_care = oci_parse($conn, $query_customer_care);
-        $r_query_customer_care = oci_execute($stid_query_customer_care);
-
-        // query to get the query ID
-        $que_id = "SELECT custqueryid from (
-            select custid, custqueryid , row_number() over(partition by custid order by querydate desc) as rn
-            from CUSTOMER_CARE
-            where custid='$cust_id' and status='Open' and agentID is null)
-            where rn=1";
-        $stid_que_id = oci_parse($conn, $que_id);
-        $r_que_id = oci_execute($stid_que_id);
-        $row_que_id = oci_fetch_array($stid_que_id, OCI_RETURN_NULLS+OCI_ASSOC);
-        $query_ID = $row_que_id['CUSTQUERYID'];
         
-        $query_ID = intval($query_ID);
-        $que_procedure1 = "BEGIN update_AgentID('$query_ID'); END;";
-        $stid_procedure1 = oci_parse($conn, $que_procedure1);
-        $r_procedure1 = oci_execute($stid_procedure1);
-
     }    
 ?>
 
@@ -84,6 +113,9 @@ require_once('connection.php');
                 <form action="gift_card.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Gift Card</button>
 				</form>
+                <form action="returns.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
+				</form>
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
@@ -131,6 +163,7 @@ require_once('connection.php');
             }else{
                 $new_resolution_time = $row2['RESOLUTIONTIMEINHOURS'];
             }
+
             print '<form action="update_address_details.php" method="post">';
             print '<div class="card" style="width: 80%; margin: auto; margin-top: 20px; margin-bottom: 20px">';
             // print '<h6 class="card-header">'.$row_top['PRODUCTNAME'].'</h6>';
@@ -142,6 +175,21 @@ require_once('connection.php');
             print '<p class="card-title"><b>Agent assigned : </b>'.$row2['AGENTFNAME'].'</p>';
             print '<p class="card-title" style="color:green;"><i>(Your Query will be resolved in the next <b>'.$new_resolution_time.'</b> Hrs.)</i></p>';
             //print '<button type="submit" name="addtocart" value="addtocart" class="btn btn-warning" style="margin-bottom:15px; width: 220px;">Update Address</button>';
+            print '<textarea id="third" class="form-control" type="text" name="customer_query" style="
+                                margin-top: 10px;
+                                background: #F8F9FA;
+                                display: none;
+                            " required></textarea>'; 
+            print '</form>';
+
+            print '<form action="update_query.php" method="post">';
+            print '<input class="form-control" type="hidden" name="custqueryid" value='.$row2['CUSTQUERYID'].' required>';
+            print '<input id="toggle" class="btn btn-primary" type="submit" name= "edit_query" value="Edit Query" style="margin-bottom: 0px;">';
+            print '</form>';
+
+            print '<form action="my_queries.php" method="post">';
+            print '<input type="hidden" name="deletequeryid" value='.$row2['CUSTQUERYID'].'>';
+            print '<input id="toggle" class="btn btn-primary" type="submit" name= "delete_query" value="Delete Query" style="margin-bottom: 0px;">';
             print '</form>';
             print '</div>';
             print '</div>';
@@ -149,6 +197,7 @@ require_once('connection.php');
 
     ?>
                        
-</div>        
+</div>   
+
 </body>
 </html>

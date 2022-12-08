@@ -47,6 +47,12 @@ session_start();
 				<form action="gift_card.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Gift Card</button>
 				</form>
+				<form action="returns.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
+				</form>
+				<form action="orders.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">Orders</button>
+				</form> 
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
@@ -196,6 +202,91 @@ print '<h6 class="card-header" style="color:#CD2114; display: flex; justify-cont
 				 ?>
 </div>
 </div>
+
+
+<div style="width: 80%; margin: auto; margin-bottom: 30px;" class="card">
+
+<?php
+		$user_email = $_SESSION['user'];
+		$user_query = "SELECT custid from customers WHERE email='$user_email'";
+		$stid_user_query = oci_parse($conn, $user_query);
+		$r_user_query = oci_execute($stid_user_query);
+		$row_user_query = oci_fetch_array($stid_user_query, OCI_RETURN_NULLS+OCI_ASSOC);
+		$cust_id = $row_user_query['CUSTID'];
+		// Query to get top products for a season
+        $query_recommended = "WITH all_orders AS (
+			SELECT o.orderid, custid, orderdate, productname
+			FROM orders o 
+			JOIN items_in_orders io ON o.orderid=io.orderid
+			JOIN items i ON io.serialnumber=i.serialnumber
+			JOIN products p ON i.productid=p.productid
+		),
+		next_best_product AS (
+			SELECT custid, productname , orderid, 
+			LEAD(productname) OVER(PARTITION BY custid ORDER BY ORDERDATE) AS NextOrdered,
+			LEAD(orderid) OVER(PARTITION BY custid ORDER BY ORDERDATE) AS NextOrderID
+			FROM all_orders
+		)
+		SELECT productname, NextOrdered , count(*) 
+		FROM next_best_product 
+		WHERE NextOrdered IS NOT NULL AND orderid<>NextOrderID
+		AND productname IN
+		(
+			SELECT productname 
+			FROM ORDERS o 
+			JOIN items_in_orders io ON o.orderid=io.orderid
+			JOIN items i ON io.serialnumber=i.serialnumber
+			JOIN products p ON i.productid=p.productid
+			WHERE custid='$cust_id' AND
+			orderdate =
+				(SELECT MAX(orderdate) FROM orders where custid='$cust_id')
+		)
+		GROUP BY productname, NextOrdered
+		ORDER BY COUNT(*) DESC
+		FETCH FIRST 3 ROWS ONLY";
+        
+
+		$stid_recommended = oci_parse($conn, $query_recommended);
+		$r_recommended = oci_execute($stid_recommended);
+		//$row_recommended = oci_fetch_array($stid_recommended, OCI_RETURN_NULLS+OCI_ASSOC);
+		// $season = $row_recommended['SEASON'];
+
+print '<h6 class="card-header" style="color:#CD2114; display: flex; justify-content: center;"> <b>Recommended Products</b></h6>';
+?>
+<div style="display: flex;justify-content: space-evenly; width: 80%; margin: auto;">
+<?php
+		//print_r($season);
+
+				while ($row_recommended2 = oci_fetch_array($stid_recommended, OCI_RETURN_NULLS+OCI_ASSOC)) {
+				// $difference = (int)$row_top['PRICEPERUNIT'] - (int)$row_top['DISCOUNTVALUE'];
+				print '<form action="shopping.php" method="post">';
+				print '<div class="card text-center" style="width: 100%; margin: auto; margin-top: 20px; margin-bottom: 20px">';
+				// print '<h6 class="card-header">'.$row_top['PRODUCTNAME'].'</h6>';
+				print '<div class="card-body">';
+				
+				// $product_id = $row_recommended['PRODUCTID'];
+				// $que = "SELECT productname, productoverview, priceperunit from products where productid='$product_id'";
+				// $stid_product_details = oci_parse($conn, $que);
+				// $r_product_details = oci_execute($stid_product_details);
+
+				// $row_product_details = oci_fetch_array($stid_product_details, OCI_RETURN_NULLS+OCI_ASSOC);
+				print '<h5 class="card-title">'.$row_recommended2['NEXTORDERED'].'</h5>';
+				// print '<h6 class="card-text" ><b style="color:red;">-%'.$row_top['DISCOUNTPERCENTAGE'].'</b><b>  $'.strval($difference).'</b></h6>';
+				// print '<p class="card-text">Listprice: <s>$'.$row_top['PRICEPERUNIT']. '</s>  Save upto $'.$row_top['DISCOUNTVALUE'].'</p>';
+				
+				print '<button type="submit" name="addtocart" value="addtocart" class="btn btn-warning" style="margin-bottom:15px; width: 220px;">Add to Cart</button>';
+				print '</form>';
+				print '</div>';
+				print '</div>';
+				} 
+				 ?>
+</div>
+</div>
+
+
+
+
+
 
 
 <div style="padding-top:15px;">

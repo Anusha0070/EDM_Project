@@ -79,6 +79,9 @@ require_once('connection.php');
                 <form action="gift_card.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Gift Card</button>
 				</form>
+                <form action="returns.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
+				</form>
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
@@ -260,8 +263,9 @@ require_once('connection.php');
                                 <input class="btn btn-primary" type="submit" name= "Register" value="Update Details">
                             </div>
 
-                            
+                         
                         </form>
+
                     </div>
                 </div>
             </div>

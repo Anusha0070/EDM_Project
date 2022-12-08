@@ -99,6 +99,9 @@ if(isset($_POST['submit_gift_card'])){
                 <form action="gift_card.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Gift Card</button>
 				</form>
+                <form action="returns.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
+				</form>
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
@@ -168,7 +171,7 @@ if(isset($_POST['submit_gift_card'])){
 
                             <?php
                             if( $code_invalid ){
-                                print '<div id="box"><h5>The Code is Invalid. Please submit a valid code!</h5></div>';
+                                print '<div id="box"><h5>Error: Gift card already activated!</h5></div>';
                             }
                             if( $code_valid ){
                                 print '<div id="box"><h5>Amount of $'.$code_amount.' added to your Wallet</h5></div>';

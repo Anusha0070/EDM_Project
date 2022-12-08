@@ -51,6 +51,9 @@ require_once('connection.php');
                 <form action="gift_card.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Gift Card</button>
 				</form>
+                <form action="returns.php" method="post">
+				<button class="dropdown-item btn btn-outline-success" type="submit">File a Return</button>
+				</form>
 				<form action="index.php" method="post">
 				<button class="dropdown-item btn btn-outline-success" type="submit">Log Out</button>
 				</form>
@@ -184,7 +187,6 @@ require_once('connection.php');
                                <div class="invalid-feedback">Password field cannot be blank!</div> -->
                             </div>
                             <div class="form-button mt-3">
-                                <!-- <button id="submit" type="submit" class="btn btn-primary">Register</button> -->
                                 <input class="btn btn-primary" type="submit" name= "add_address" value="Submit">
                             </div>
 
