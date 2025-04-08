@@ -40,9 +40,9 @@
 1. Assign agent to a customer query. Agents with lowest open tickets will be assigned. High priority queries will receive the quickest resolving agents.
 
 **Screenshots**
+
 **Products Page: This is the default page displayed after the customer logs in. This page displays the top deals on best selling products and the best selling products for the current season.**
 ![image](https://github.com/user-attachments/assets/19e2921b-8efd-427d-8b21-4317c17c7790)
-
 **List of products that were frequently purchased with the product ‘Hose’. Customers can navigate to this page by clicking on the ‘Frequently purchased together’ button on a product**
 ![image](https://github.com/user-attachments/assets/1d225d05-129d-48df-8881-bdc6b897ef75)
 
