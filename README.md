@@ -30,7 +30,7 @@
 10. Delete customer address
 11. Change the wording on the gift cards page to 'Paste your gift card details to activate the gift card'
 
-**Triggers Implemented **
+**Triggers Implemented**
 
 1. Update wallet balance in Customers table
 2. Update numberOfTickets in Agents table
