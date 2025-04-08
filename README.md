@@ -37,4 +37,7 @@
 
 **Stored Procedures Implemented**
 
-1. Assign agent to a customer query. Agents with lowest open tickets will be assigned. High priority queries will receive the quickest resolving agents. 
+1. Assign agent to a customer query. Agents with lowest open tickets will be assigned. High priority queries will receive the quickest resolving agents.
+
+![image](https://github.com/user-attachments/assets/19e2921b-8efd-427d-8b21-4317c17c7790)
+
