@@ -40,18 +40,18 @@
 1. Assign agent to a customer query. Agents with lowest open tickets will be assigned. High priority queries will receive the quickest resolving agents.
 
 **Screenshots**
-1. Products Page: This is the default page displayed after the customer logs in. This page displays the top deals on best selling products and the best selling products for the current season.
+**Products Page: This is the default page displayed after the customer logs in. This page displays the top deals on best selling products and the best selling products for the current season.**
 ![image](https://github.com/user-attachments/assets/19e2921b-8efd-427d-8b21-4317c17c7790)
 
-2. List of products that were frequently purchased with the product ‘Hose’. Customers can navigate to this page by clicking on the ‘Frequently purchased together’ button on a product
+**List of products that were frequently purchased with the product ‘Hose’. Customers can navigate to this page by clicking on the ‘Frequently purchased together’ button on a product**
 ![image](https://github.com/user-attachments/assets/1d225d05-129d-48df-8881-bdc6b897ef75)
 
-3. The following alert is displayed when there is low stock
+**The following alert is displayed when there is low stock**
 ![image](https://github.com/user-attachments/assets/bb9c4e38-ed8a-405d-b8dc-37590b2d5f94)
 
-4. The following alert is displayed when the product is eligible for free delivery
+**The following alert is displayed when the product is eligible for free delivery**
 ![image](https://github.com/user-attachments/assets/0d5fb51b-da60-48b4-8c51-6d4018d00b4c)
 
-5. Queries Page: After clicking on the ‘Ask Us’ button on the top right corner of the page, the customer will be taken to a new page where the customer can add a new query.
-After clicking on the Submit button the new query will be added to the list of queries.
+**Queries Page: After clicking on the ‘Ask Us’ button on the top right corner of the page, the customer will be taken to a new page where the customer can add a new query.
+After clicking on the Submit button the new query will be added to the list of queries.**
 ![image](https://github.com/user-attachments/assets/122e6e57-4530-4f71-83dc-1abb90b0e027)
